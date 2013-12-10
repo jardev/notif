@@ -9,7 +9,8 @@ exports.index = function(db) {
             res.render('index', {
                 title: 'Notif',
                 events_str: JSON.stringify(docs),
-                "eventlist": docs
+                eventlist: docs,
+                user: req.user
             });
         });
     };
