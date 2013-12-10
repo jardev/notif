@@ -13,6 +13,7 @@
     "express-validator": "*",
     "passport": "*",
     "passport-facebook": "*",
-    "connect-flash": "*"
+    "connect-flash": "*",
+    "crypto": "*"
   }
 }

@@ -34,9 +34,13 @@ block content
           div#map(data-locations=events_str)
 
       div.col-md-4
+        a.btn.btn-danger.btn-lg Трапилось лихо?
+        h3 Останні події
         div.list-group
           each ev, i in eventlist
             a.list-group-item.event(href="#", data-index="#{ev._id}")
+              div.circle.pull-right.avatar
+                img(src="http://www.gravatar.com/avatar/c7abad9d6f58fafd4cba2eb7c2aedaa4?s=48", alt="jardev")
               h4.list-group-item-heading= ev.title
               p.list-group-item-text= ev.description
               small= ev.address
