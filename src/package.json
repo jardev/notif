@@ -10,6 +10,9 @@
     "jade": "*",
     "mongodb": "*",
     "monk": "*",
-    "express-validator": "*"
+    "express-validator": "*",
+    "passport": "*",
+    "passport-facebook": "*",
+    "connect-flash": "*"
   }
 }
