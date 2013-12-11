@@ -37,17 +37,17 @@ function initialize() {
         google.maps.event.addListener(marker, 'click', handler);
 
         markers[ev._id] = handler;
+
+        $('.event[data-index="' + ev._id + '"]').click(function(e) {
+            var handler = markers[$(this).attr("data-index")];
+            handler();
+        });
     };
 
     var events = JSON.parse($("#map").attr("data-locations"));
     for (var i in events) {
         window.addMapMarker(events[i]);
     }
-
-    $(".event").click(function(e) {
-        var handler = markers[$(this).attr("data-index")];
-        handler();
-    });
 }
 
 google.maps.event.addDomListener(window, 'load', initialize);

@@ -1,0 +1,77 @@
+extends layout
+
+block head-extra
+  script(src="https://maps.googleapis.com/maps/api/js?sensor=false")
+  script(src="/socket.io/socket.io.js")
+  script(src="/js/map.js")
+  script(src="/js/news.js");
+
+block content
+  div.navbar.navbar-inverse.navbar-fixed-top(role="navigation")
+    div.container
+      div.navbar-header
+        button.navbar-toggle(type='button', data-toggle='collapse', data-target='.navbar-collapse')
+          span.sr-only Навігація
+          span.icon-bar
+          span.icon-bar
+          span.icon-bar
+        a.navbar-brand(href="#") Гарячі точки
+      if user
+        a.circle.pull-right
+          img(src="https://graph.facebook.com/" + user.facebook_id + "/picture?width=32&height=32")
+      div.navbar-collapse.collapse
+        p.navbar-text.pull-right
+          if user
+            a(href="/auth/logout") Вийти
+          else
+            a(href="/auth/facebook") Увійти з Facebook
+        ul.nav.navbar-nav
+          li
+            a(href="/") Повідомлення
+          li.active
+            a(href="/people") Люди
+          li
+            a(href="#") Контакти
+
+  div.container
+    div.row
+
+      div.col-md-12
+        h4 Користувачі
+        if (users && users.length > 0)
+          each u, i in users
+            span.user-info
+              div.circle.avatar
+                img(src="https://graph.facebook.com/" + u.facebook_id + "/picture?width=32&height=32")
+              span #{u.name}
+        else
+          p Немає запрошених та зареєстрованих користувачів
+
+    div.row
+
+      div.col-md-6
+        h4 Друзі
+        ul.list-group
+          each u, i in friends
+            li.list-group-item
+              div.circle.avatar
+                img(src="https://graph.facebook.com/" + u.id + "/picture?width=32&height=32")
+              span #{u.name}
+              a.btn.btn-primary.pull-right(href="/invitations/" + u.id + "/invite") Запросити
+
+      div.col-md-6
+        h4 Запрошення
+        ul.list-group
+          each u, i in invited_friends
+            li.list-group-item
+              div.circle.avatar
+                img(src="https://graph.facebook.com/" + u.id + "/picture?width=32&height=32")
+              span #{u.name}
+              a.btn.btn-danger.pull-right(href="/invitations/" + u.id + "/delete") Видалити
+
+    hr
+
+    footer
+      p &copy; Notif 2013
+
+

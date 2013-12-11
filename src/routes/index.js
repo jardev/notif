@@ -20,14 +20,92 @@ exports.index = function(db) {
     };
 };
 
-exports.newevent = function(passport) {
+exports.invite_user = function(db) {
     return function(req, res) {
         if (!req.user) {
-            res.redirect('/auth/facebook');
-        } else {
-            res.render('new_event');
+            return res.redirect('/auth/facebook');
         }
+
+        if (!req.params.facebook_id)
+            return res.redirect('/people');
+
+        invitations = db.get("invitations");
+        invitations.insert({
+            facebook_id: req.params.facebook_id,
+            date: Date(),
+            invited_by: req.user
+        }, function(err, doc) {
+            res.redirect('/people');
+        });
     };
+};
+
+exports.delete_invite = function(db) {
+    return function(req, res) {
+        if (!req.user) {
+            return res.redirect('/auth/facebook');
+        }
+
+        if (!req.params.facebook_id)
+            return res.redirect('/people');
+
+        invitations = db.get("invitations");
+        invitations.remove({
+            facebook_id: req.params.facebook_id,
+            "invited_by._id": req.user._id
+        }, function(err, docs) {
+            res.redirect('/people');
+        });
+    };
+};
+
+exports.people = function(db, facebook) {
+    return function(req, res) {
+        if (!req.user) {
+            return res.redirect('/auth/facebook');
+        }
+
+        facebook.getFbData(req.user.token, '/me/friends', function(data) {
+            var all_friends = JSON.parse(data)['data'];
+
+            db.get("users").find({ "invited_by._id": req.user._id }, function(err, users) {
+                db.get("invitations").find({
+                    "invited_by._id": req.user._id
+                }, function(err, docs) {
+                    var invitations = {};
+                    docs.forEach(function(doc) {
+                        invitations[doc.facebook_id] = doc;
+                    });
+
+                    var friends = [];
+                    var invited_friends = [];
+                    all_friends.forEach(function(friend) {
+                        var i = invitations[friend.id];
+                        if (i) {
+                            invited_friends.push(friend);
+                        } else {
+                            friends.push(friend);
+                        }
+                    });
+
+                    res.render('people', {
+                        user: req.user,
+                        users: users,
+                        friends: friends,
+                        invited_friends: invited_friends
+                    });
+                });
+            });
+        });
+    };
+};
+
+exports.newevent = function(req, res) {
+    if (!req.user) {
+        res.redirect('/auth/facebook');
+    } else {
+        res.render('new_event');
+    }
 };
 
 exports.postevent = function(app, passport, db, client) {
@@ -59,7 +137,8 @@ exports.postevent = function(app, passport, db, client) {
                 address: req.body.address,
                 latitude: req.body.latitude,
                 longitude: req.body.longitude,
-                reported_at: Date()
+                reported_at: Date(),
+                reporter: req.user
             }, function(err, doc) {
                 publish_event(app, client, doc);
             });

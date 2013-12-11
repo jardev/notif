@@ -24,7 +24,6 @@ var db = monk('localhost:27017/notif');
 // Facebook Authentication
 var facebook = require('./util/facebook');
 
-var users = [];
 var passport = require('passport');
 var FacebookStrategy = require('passport-facebook').Strategy;
 passport.use(new FacebookStrategy({
@@ -32,25 +31,64 @@ passport.use(new FacebookStrategy({
         clientSecret: "d101ddf251be6c577deb7c47e2c469db",
         callbackURL: SITE_ADDRESS + "/auth/facebook/callback"
     }, function(accessToken, refreshToken, profile, done) {
-        /*User.findOrCreate(..., function(err, user) {
-            if (err) { return done(err); }
-            done(null, user);
-        });*/
-        console.log(profile);
-        facebook.getFbData(accessToken, '/me/friends', function(data){
-            console.log(data);
+        // check if the user is verified on Facebook
+        if (!profile._json.verified) {
+            return done(null);
+        }
+
+        // check if the user exists
+        var users = db.get("users");
+        users.findOne({ facebook_id: profile.id }, function(err, user) {
+            if (err) {
+                console.log(err);
+                return done(null);
+            }
+
+            if (user) {
+                users.updateById(user._id, { $set: { token: accessToken } },
+                    function(err, doc) {
+                        done(null, user);
+                    }
+                );
+            } else {
+                // Check if there's an invitation
+                var invitations = db.get("invitations");
+                invitations.findOne({ facebook_id: profile.id }, function(err, invitation) {
+                    if (err)
+                        return done(null);
+                    if (invitation) {
+                        users.insert({
+                            facebook_id: profile.id,
+                            name: profile.displayName,
+                            email: profile._json.email,
+                            registered_at: Date(),
+                            invited_at: invitation.date,
+                            invited_by: invitation.inviter_by,
+                            token: accessToken
+                        }, function(err, user) {
+                            if (err)
+                                return done(null);
+                            invitations.remove(invitation);
+                            done(null, user);
+                        });
+                    }
+                });
+            }
         });
-        users[profile["id"]] = profile;
-        done(null, profile);
     })
 );
 passport.serializeUser(function(user, done) {
-    done(null, user.id);
+    done(null, user.facebook_id);
 });
 
 passport.deserializeUser(function(id, done) {
-    var user = users[id];
-    done(null, user);
+    var users = db.get("users");
+    users.findOne({ facebook_id: id }, function(err, user) {
+        if (err)
+            done(null);
+        else
+            done(null, user);
+    });
 });
 
 // Redis and Socket.IO
@@ -94,8 +132,11 @@ app.get('/auth/facebook/callback',
         successRedirect: '/',
         failureRedirect: '/' }));
 app.get('/', routes.index(db));
-app.get('/newevent', routes.newevent(passport));
+app.get('/newevent', routes.newevent);
 app.post('/newevent', routes.postevent(app, passport, db, client));
+app.get('/people', routes.people(db, facebook));
+app.get('/invitations/:facebook_id/invite', routes.invite_user(db));
+app.get('/invitations/:facebook_id/delete', routes.delete_invite(db));
 app.get('/auth/logout', function(req, res) {
   req.logout();
   res.redirect('/');

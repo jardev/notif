@@ -26,6 +26,15 @@ body {
     height: 200px;
 }
 
+.user-info {
+    margin-right: 16px;
+}
+
+.avatar img {
+    width:32px;
+    height:32px;
+}
+
 /* Circle Avatar Styles */
 .circle {
     line-height: 0;     /* remove line-height */
