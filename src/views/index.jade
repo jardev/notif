@@ -51,7 +51,8 @@ block content
                 img(src="http://www.gravatar.com/avatar/c7abad9d6f58fafd4cba2eb7c2aedaa4?s=48", alt="jardev")
               h4.list-group-item-heading= ev.title
               p.list-group-item-text= ev.description
-              small= ev.address
+              small #{ev.address}, #{moment(ev.reported_at).format('HH:mm DD.MM.YYYY')}
+              p= ev.reported_at
 
     hr
 

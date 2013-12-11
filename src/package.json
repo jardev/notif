@@ -16,6 +16,7 @@
     "passport": "*",
     "passport-facebook": "*",
     "connect-flash": "*",
-    "crypto": "*"
+    "crypto": "*",
+    "moment": "*"
   }
 }

@@ -39,23 +39,25 @@ block content
       div.col-md-8
         div.jumbotron
           h3 Створити нову подію
-          - if (errors)
-            p.errorMessage= "The following errors occured:"
-            ul
-              - each error in errors
-                li= error.msg
-          form#newEvent.form-vertical(name="newevent", method="post", action="")
-            div.form-group
-              input#title.form-control(type="text", name="title", placeholder="Що трапилось?")
-            div.form-group
-              input#address.form-control(type="text", name="address", placeholder="Де?")
-            div.form-group
-              div#address-map
-            div.form-group
-              textarea#description.form-control(rows="5", placeholder="Розкажіть детальніше")
-            input#latitude(type="hidden", style="display:none;", name="latitude")
-            input#longitude(type="hidden", style="display:none;", name="longitude")
-            button#btnSubmit.btn.btn-success(type="submit") Повідомити!
+          div.content
+            - if (errors)
+              div.panel.small
+                p.error= "Будь ласка, виправте помилки:"
+                ul
+                  - each error in errors
+                    li= error.msg
+            form#newEvent.form-vertical(name="newevent", method="post", action="")
+              div.form-group
+                input#title.form-control(type="text", name="title", placeholder="Що трапилось?")
+              div.form-group
+                input#address.form-control(type="text", name="address", placeholder="Де?")
+              div.form-group
+                div#address-map
+              div.form-group
+                textarea#description.form-control(rows="5", placeholder="Розкажіть детальніше", name="description")
+              input#latitude(type="hidden", style="display:none;", name="latitude")
+              input#longitude(type="hidden", style="display:none;", name="longitude")
+              button#btnSubmit.btn.btn-success(type="submit") Повідомити!
 
       div.col-md-2
     hr

@@ -68,6 +68,7 @@ app.use(express.favicon());
 app.use(express.logger('dev'));
 app.use(express.json());
 app.use(express.urlencoded());
+app.use(express.bodyParser());
 app.use(expressValidator());
 app.use(express.methodOverride());
 app.use(express.cookieParser('AsJjhsdjJH34jMNjhs2sjjh2jaHAJmwmsJH34hsdfkjh2'));
@@ -94,6 +95,7 @@ app.get('/auth/facebook/callback',
         failureRedirect: '/' }));
 app.get('/', routes.index(db));
 app.get('/newevent', routes.newevent(passport));
+app.post('/newevent', routes.postevent(app, passport, db, client));
 app.get('/auth/logout', function(req, res) {
   req.logout();
   res.redirect('/');
