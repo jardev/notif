@@ -6,6 +6,8 @@
     "start": "node app.js"
   },
   "dependencies": {
+    "redis": "*",
+    "socket.io": "*",
     "express": "3.4.6",
     "jade": "*",
     "mongodb": "*",
