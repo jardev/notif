@@ -1,10 +1,9 @@
 extends layout
 
 block head-extra
+  script(src="/js/donetyping.js")
   script(src="https://maps.googleapis.com/maps/api/js?sensor=false")
-  script(src="/socket.io/socket.io.js")
-  script(src="/js/map.js")
-  script(src="/js/news.js");
+  script(src="/js/newevent_map.js")
 
 block content
   div.navbar.navbar-inverse.navbar-fixed-top(role="navigation")
@@ -36,23 +35,29 @@ block content
   div.container
     div.row
 
+      div.col-md-2
       div.col-md-8
-        div.panel
-          div#map(data-locations=events_str)
+        div.jumbotron
+          h3 Створити нову подію
+          - if (errors)
+            p.errorMessage= "The following errors occured:"
+            ul
+              - each error in errors
+                li= error.msg
+          form#newEvent.form-vertical(name="newevent", method="post", action="")
+            div.form-group
+              input#title.form-control(type="text", name="title", placeholder="Що трапилось?")
+            div.form-group
+              input#address.form-control(type="text", name="address", placeholder="Де?")
+            div.form-group
+              div#address-map
+            div.form-group
+              textarea#description.form-control(rows="5", placeholder="Розкажіть детальніше")
+            input#latitude(type="hidden", style="display:none;", name="latitude")
+            input#longitude(type="hidden", style="display:none;", name="longitude")
+            button#btnSubmit.btn.btn-success(type="submit") Повідомити!
 
-      div.col-md-4
-        if user
-          a.btn.btn-danger.btn-lg(href="/newevent") Трапилось лихо?
-        h3 Останні події
-        div#news.list-group
-          each ev, i in eventlist
-            a.list-group-item.event(href="#", data-index="#{ev._id}")
-              div.circle.pull-right.avatar
-                img(src="http://www.gravatar.com/avatar/c7abad9d6f58fafd4cba2eb7c2aedaa4?s=48", alt="jardev")
-              h4.list-group-item-heading= ev.title
-              p.list-group-item-text= ev.description
-              small= ev.address
-
+      div.col-md-2
     hr
 
     footer

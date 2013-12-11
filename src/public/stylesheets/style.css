@@ -21,6 +21,11 @@ body {
     height:600px;
 }
 
+#address-map {
+    width:100%;
+    height: 200px;
+}
+
 /* Circle Avatar Styles */
 .circle {
     line-height: 0;     /* remove line-height */

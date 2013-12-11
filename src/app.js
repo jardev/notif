@@ -1,9 +1,11 @@
-
 /**
- * Module dependencies.
+ * Notif server
  */
-var site_address = "http://localhost:3000";
+var PORT = 3000;
+var HOST = "localhost";
+var SITE_ADDRESS = "http://localhost:3000";
 
+// Express and HTTP
 var express = require('express');
 var routes = require('./routes');
 var http = require('http');
@@ -12,12 +14,14 @@ var path = require('path');
 var expressValidator = require('express-validator');
 var flash = require('connect-flash');
 
+var app = express();
+
+// Mongo DB
 var mongo = require('mongodb');
 var monk = require('monk');
 var db = monk('localhost:27017/notif');
 
-var app = express();
-
+// Facebook Authentication
 var facebook = require('./util/facebook');
 
 var users = [];
@@ -26,7 +30,7 @@ var FacebookStrategy = require('passport-facebook').Strategy;
 passport.use(new FacebookStrategy({
         clientID: "611838998881678",
         clientSecret: "d101ddf251be6c577deb7c47e2c469db",
-        callbackURL: site_address + "/auth/facebook/callback"
+        callbackURL: SITE_ADDRESS + "/auth/facebook/callback"
     }, function(accessToken, refreshToken, profile, done) {
         /*User.findOrCreate(..., function(err, user) {
             if (err) { return done(err); }
@@ -49,8 +53,15 @@ passport.deserializeUser(function(id, done) {
     done(null, user);
 });
 
+// Redis and Socket.IO
+var redis = require('redis');
+var client = redis.createClient();
+console.log('Connected to Redis server');
+
+var io = require('socket.io');
+
 // all environments
-app.set('port', process.env.PORT || 3000);
+app.set('port', process.env.PORT || PORT);
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'jade');
 app.use(express.favicon());
@@ -82,11 +93,30 @@ app.get('/auth/facebook/callback',
         successRedirect: '/',
         failureRedirect: '/' }));
 app.get('/', routes.index(db));
-app.get('/auth/logout', function(req, res){
+app.get('/newevent', routes.newevent(passport));
+app.get('/auth/logout', function(req, res) {
   req.logout();
   res.redirect('/');
 });
 
-http.createServer(app).listen(app.get('port'), function(){
+var server = http.createServer(app).listen(app.get('port'), function(){
   console.log('Express server listening on port ' + app.get('port'));
 });
+
+var socket = io.listen(server);
+socket.on('connection', function(client) {
+    var subscribe = redis.createClient();
+    subscribe.subscribe('news');
+
+    subscribe.on("message", function(channel, message) {
+        client.send(message);
+    });
+
+    client.on("message", function(msg) {});
+
+    client.on("disconnect", function() {
+        subscribe.quit();
+    });
+});
+
+

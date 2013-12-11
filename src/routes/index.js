@@ -1,6 +1,7 @@
 /*
  * GET home page.
  */
+var redis = require('redis');
 
 exports.index = function(db) {
     return function(req, res) {
@@ -15,3 +16,27 @@ exports.index = function(db) {
         });
     };
 };
+
+exports.newevent = function(passport) {
+    return function(req, res) {
+        if (!req.user) {
+            res.redirect('/auth/facebook');
+        } else {
+            res.render('new_event');
+        }
+    };
+};
+
+function publish_event(app, event) {
+    // render template
+    app.render('news_item', {
+        event: event,
+        event_str: JSON.stringify(event)
+    }, function(err, html) {
+        // and send it to redis
+        var client = redis.createClient();
+        client.publish('news', html);
+    });
+}
+
+

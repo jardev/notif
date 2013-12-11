@@ -17,10 +17,7 @@ function initialize() {
     }
 
     // Add markers
-    var events = JSON.parse($("#map").attr("data-locations"));
-    console.log(events);
-    for (var i in events) {
-        var ev = events[i];
+    window.addMapMarker = function(ev) {
         var marker = new google.maps.Marker({
             position: new google.maps.LatLng(ev.latitude, ev.longitude),
             map: map,
@@ -40,6 +37,11 @@ function initialize() {
         google.maps.event.addListener(marker, 'click', handler);
 
         markers[ev._id] = handler;
+    };
+
+    var events = JSON.parse($("#map").attr("data-locations"));
+    for (var i in events) {
+        window.addMapMarker(events[i]);
     }
 
     $(".event").click(function(e) {
