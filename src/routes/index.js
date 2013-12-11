@@ -10,7 +10,7 @@ exports.index = function(db) {
             { limit: 10, sort: { reported_at: -1} },
             function(e, docs) {
                 res.render('index', {
-                    title: 'Notif',
+                    title: 'Головна',
                     events_str: JSON.stringify(docs),
                     eventlist: docs,
                     user: req.user,
@@ -104,7 +104,9 @@ exports.newevent = function(req, res) {
     if (!req.user) {
         res.redirect('/auth/facebook');
     } else {
-        res.render('new_event');
+        res.render('new_event', {
+            user: req.user
+        });
     }
 };
 
