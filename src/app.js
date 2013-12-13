@@ -167,4 +167,4 @@ socket.on('connection', function(client) {
     });
 });
 
-
+exports.server = server;
