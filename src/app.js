@@ -1,10 +1,6 @@
 /**
  * Notif server
  */
-var PORT = 3000;
-var HOST = "localhost";
-var SITE_ADDRESS = "http://localhost:3000";
-
 // Express and HTTP
 var express = require('express');
 var routes = require('./routes');
@@ -15,6 +11,10 @@ var expressValidator = require('express-validator');
 var flash = require('connect-flash');
 
 var app = express();
+
+// Load configuration
+var config = require('./config');
+config[app.get('env')]();
 
 // Mongo DB
 var mongo = require('mongodb');
@@ -29,7 +29,7 @@ var FacebookStrategy = require('passport-facebook').Strategy;
 passport.use(new FacebookStrategy({
         clientID: "611838998881678",
         clientSecret: "d101ddf251be6c577deb7c47e2c469db",
-        callbackURL: SITE_ADDRESS + "/auth/facebook/callback"
+        callbackURL: config.SITE_ADDRESS + "/auth/facebook/callback"
     }, function(accessToken, refreshToken, profile, done) {
         // check if the user is verified on Facebook
         if (!profile._json.verified) {
@@ -99,7 +99,7 @@ console.log('Connected to Redis server');
 var io = require('socket.io');
 
 // all environments
-app.set('port', process.env.PORT || PORT);
+app.set('port', process.env.PORT || config.PORT);
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'jade');
 app.use(express.favicon());
@@ -119,7 +119,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 // development only
 if ('development' == app.get('env')) {
-  app.use(express.errorHandler());
+    app.use(express.errorHandler());
 }
 
 // Routes
