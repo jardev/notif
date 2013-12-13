@@ -122,6 +122,11 @@ if ('development' == app.get('env')) {
     app.use(express.errorHandler());
 }
 
+app.all('*', function(req, res, next) {
+    res.locals.app_env = app.get('env');
+    next();
+});
+
 // Routes
 app.get('/auth/facebook', passport.authenticate('facebook', {
     scope: ['basic_info', 'email', 'user_friends', 'user_about_me',

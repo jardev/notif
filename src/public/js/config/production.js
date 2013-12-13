@@ -1,0 +1,1 @@
+var SOCKETIO_ADDRESS = 'http://hot.inua.co';

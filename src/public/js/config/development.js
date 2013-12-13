@@ -1,0 +1,1 @@
+var SOCKETIO_ADDRESS = 'http://localhost:3000/';

@@ -1,5 +1,5 @@
 $(document).ready(function() {
-    var socket = io.connect('http://localhost:3000/');
+    var socket = io.connect(SOCKETIO_ADDRESS);
 
     socket.on('connect', function(data) {
         setStatus('connected');
