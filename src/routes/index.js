@@ -76,6 +76,9 @@ exports.people = function(db, facebook) {
                     docs.forEach(function(doc) {
                         invitations[doc.facebook_id] = doc;
                     });
+                    users.forEach(function(doc) {
+                        invitations[doc.facebook_id] = doc;
+                    });
 
                     var friends = [];
                     var invited_friends = [];
