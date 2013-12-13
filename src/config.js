@@ -1,6 +1,6 @@
 exports.production = function () {
-    this.PORT = 80;
-    this.HOST = 'hot.inua.co';
+    this.PORT = 3000;
+    this.HOST = '127.0.0.1';
     this.SITE_ADDRESS = 'http://hot.inua.co';
     this.FACEBOOK_APP_ID = "182345931968294";
     this.FACEBOOK_SECRET = "cb7b8a10212cf51f92d6f79dc8be0252";
