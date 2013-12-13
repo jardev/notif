@@ -67,8 +67,11 @@ exports.people = function(db, facebook) {
 
         facebook.getFbData(req.user.token, '/me/friends', function(data) {
             var all_friends = JSON.parse(data)['data'];
+            friends_ids = all_friends.map(function(friend) {
+                return friend.id;
+            });
 
-            db.get("users").find({ "invited_by._id": req.user._id }, function(err, users) {
+            db.get("users").find({ facebook_id: { $in: friends_ids } }, function(err, users) {
                 db.get("invitations").find({
                     "invited_by._id": req.user._id
                 }, function(err, docs) {
