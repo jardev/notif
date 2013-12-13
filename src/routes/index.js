@@ -73,11 +73,12 @@ exports.people = function(db, facebook) {
                     "invited_by._id": req.user._id
                 }, function(err, docs) {
                     var invitations = {};
+                    var registered = {};
                     docs.forEach(function(doc) {
                         invitations[doc.facebook_id] = doc;
                     });
                     users.forEach(function(doc) {
-                        invitations[doc.facebook_id] = doc;
+                        registered[doc.facebook_id] = doc;
                     });
 
                     var friends = [];
@@ -87,7 +88,9 @@ exports.people = function(db, facebook) {
                         if (i) {
                             invited_friends.push(friend);
                         } else {
-                            friends.push(friend);
+                            var r = registered[friend.id];
+                            if (!r)
+                                friends.push(friend);
                         }
                     });
 
