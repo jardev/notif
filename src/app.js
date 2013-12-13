@@ -27,8 +27,8 @@ var facebook = require('./util/facebook');
 var passport = require('passport');
 var FacebookStrategy = require('passport-facebook').Strategy;
 passport.use(new FacebookStrategy({
-        clientID: "611838998881678",
-        clientSecret: "d101ddf251be6c577deb7c47e2c469db",
+        clientID: config.FACEBOOK_APP_ID,
+        clientSecret: config.FACEBOOK_SECRET,
         callbackURL: config.SITE_ADDRESS + "/auth/facebook/callback"
     }, function(accessToken, refreshToken, profile, done) {
         // check if the user is verified on Facebook
