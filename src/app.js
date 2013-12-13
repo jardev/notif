@@ -100,6 +100,7 @@ var io = require('socket.io');
 
 // all environments
 app.set('port', process.env.PORT || config.PORT);
+app.set('host', process.env.HOST || config.HOST);
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'jade');
 app.use(express.favicon());
@@ -147,8 +148,8 @@ app.get('/auth/logout', function(req, res) {
   res.redirect('/');
 });
 
-var server = http.createServer(app).listen(app.get('port'), function(){
-  console.log('Express server listening on port ' + app.get('port'));
+var server = http.createServer(app).listen(app.get('port'), app.get('host'), function(){
+  console.log('Express server listening on ' + app.get('host') + ':' + app.get('port'));
 });
 
 var socket = io.listen(server);
