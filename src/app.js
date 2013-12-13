@@ -63,7 +63,7 @@ passport.use(new FacebookStrategy({
                             email: profile._json.email,
                             registered_at: Date(),
                             invited_at: invitation.date,
-                            invited_by: invitation.inviter_by,
+                            invited_by: invitation.invited_by,
                             token: accessToken
                         }, function(err, user) {
                             if (err)
