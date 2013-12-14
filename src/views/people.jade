@@ -20,11 +20,6 @@ block content
         a.circle.pull-right
           img(src="https://graph.facebook.com/" + user.facebook_id + "/picture?width=32&height=32")
       div.navbar-collapse.collapse
-        p.navbar-text.pull-right
-          if user
-            a(href="/auth/logout") Вийти
-          else
-            a(href="/auth/facebook") Увійти з Facebook
         ul.nav.navbar-nav
           li
             a(href="/") Повідомлення
@@ -32,6 +27,12 @@ block content
             a(href="/people") Люди
           li
             a(href="#") Контакти
+          if user
+            li
+              a(href="/auth/logout") Вийти
+          else
+            li
+              a(href="/auth/facebook") Увійти з Facebook
 
   div.container
     div.row

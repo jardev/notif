@@ -20,11 +20,6 @@ block content
         a.circle.pull-right
           img(src="https://graph.facebook.com/" + user.facebook_id + "/picture?width=32&height=32")
       div.navbar-collapse.collapse
-        p.navbar-text.pull-right
-          if user
-            a(href="/auth/logout") Вийти
-          else
-            a(href="/auth/facebook") Увійти з Facebook
         ul.nav.navbar-nav
           li.active
             a(href="/") Повідомлення
@@ -33,13 +28,15 @@ block content
               a(href="/people") Люди
           li
             a(href="#") Контакти
+          if user
+            li
+              a(href="/auth/logout") Вийти
+          else
+            li
+              a(href="/auth/facebook") Зайти з Facebook
 
   div.container
     div.row
-
-      div.col-md-8
-        div.panel
-          div#map(data-locations=events_str)
 
       div.col-md-4
         if user
@@ -53,6 +50,10 @@ block content
               h4.list-group-item-heading= ev.title
               p.list-group-item-text= ev.description
               small #{ev.address}, #{moment(ev.reported_at).format('HH:mm DD.MM.YYYY')}
+
+      div.col-md-8
+        div.panel
+          div#map(data-locations=events_str)
 
     hr
 
