@@ -10,8 +10,10 @@ function initialize() {
     var map = new google.maps.Map(map_canvas, map_options);
 
     function createHandler(content, map, marker) {
-        return function() {
+        return function(center) {
             infowindow.setContent(content);
+            if (center)
+                map.setCenter(marker.getPosition());
             infowindow.open(map, marker);
         };
     }
@@ -39,14 +41,28 @@ function initialize() {
         markers[ev._id] = handler;
 
         $('.event[data-index="' + ev._id + '"]').click(function(e) {
-            var handler = markers[$(this).attr("data-index")];
-            handler();
+            if (!$(e.target).closest('a').length) {
+                var handler = markers[$(this).attr("data-index")];
+                handler();
+            }
         });
+
+        return handler;
     };
 
     var events = JSON.parse($("#map").attr("data-locations"));
     for (var i in events) {
         window.addMapMarker(events[i]);
+    }
+
+    var selected = JSON.parse($("#map").attr("data-highlight"));
+    if (selected) {
+        var marker = markers[selected._id];
+        if (!marker)
+            marker = window.addMapMarker(selected);
+        $(document).ready(function() {
+            marker(true);
+        });
     }
 }
 

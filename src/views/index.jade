@@ -44,18 +44,26 @@ block content
         if user
           a.btn.btn-danger.btn-lg(href="/newevent") Трапилось лихо?
         h3 Останні події
-        div#news.list-group
+        ul#news.list-group
           each ev, i in eventlist
-            a.list-group-item.event(href="#", data-index="#{ev._id}")
+            li.list-group-item.event(data-index="#{ev._id}")
               div.circle.pull-right.avatar
                 img(src="https://graph.facebook.com/" + ev.reporter.facebook_id + "/picture?width=32&height=32")
               h4.list-group-item-heading= ev.title
               p.list-group-item-text= ev.description
               small #{ev.address}, #{moment(ev.reported_at).format('HH:mm DD.MM.YYYY')}
+              div
+                a(href="/event/#{ev._id}")
+                  button.btn.btn-default.btn-xs(type="button")
+                    span.glyphicon.glyphicon-link
+                a(href="https://www.facebook.com/sharer/sharer.php?u=https%3A%2F%2Fhot.inua.co/event/#{ev._id}&", target="_blank")
+                  button.btn.btn-default.btn-xs(type="button") F
+                a(href="#")
+                  button.btn.btn-default.btn-xs(type="button") T
 
       div.col-md-8
         div.panel
-          div#map(data-locations=events_str)
+          div#map(data-locations=events_str, data-highlight=selected_event)
 
     hr
 

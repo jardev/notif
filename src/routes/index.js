@@ -5,18 +5,26 @@ var moment = require('moment');
 
 exports.index = function(db) {
     return function(req, res) {
+        var selected_event = null;
+        if (req.params.event_id) {
+
+        }
         var event_collection = db.get("events");
         var events = event_collection.find({},
             { limit: 10, sort: { reported_at: -1} },
             function(e, docs) {
-                res.render('index', {
-                    title: 'Головна',
-                    events_str: JSON.stringify(docs),
-                    eventlist: docs,
-                    user: req.user,
-                    moment: moment
-            });
-        });
+                event_collection.findOne({ _id: req.params.event_id}, function(e, doc) {
+                    res.render('index', {
+                        title: 'Головна',
+                        events_str: JSON.stringify(docs),
+                        eventlist: docs,
+                        user: req.user,
+                        moment: moment,
+                        selected_event: JSON.stringify(doc)
+                    });
+                });
+            }
+        );
     };
 };
 

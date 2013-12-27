@@ -79,3 +79,11 @@ body {
     transform: scale(0.8) rotate(20deg);
 }
 a.circle { color: transparent; } /* IE fix: removes blue border */
+
+.event {
+    cursor: pointer;
+}
+
+.event:hover {
+    background-color: #ffe;
+}

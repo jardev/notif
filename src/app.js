@@ -138,6 +138,7 @@ app.get('/auth/facebook/callback',
         successRedirect: '/',
         failureRedirect: '/' }));
 app.get('/', routes.index(db));
+app.get('/event/:event_id', routes.index(db));
 app.get('/newevent', routes.newevent);
 app.post('/newevent', routes.postevent(app, passport, db, client));
 app.get('/people', routes.people(db, facebook));
